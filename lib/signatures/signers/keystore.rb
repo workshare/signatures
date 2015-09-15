@@ -3,7 +3,7 @@ module Signatures
     class Keystore
       attr_reader :keystore, :base_signer
 
-      def initialize(keystore:, base_signer: Basic, **opts)
+      def initialize(keystore:, base_signer: Basic.new, **opts)
         self.keystore = keystore
         self.base_signer = base_signer
       end

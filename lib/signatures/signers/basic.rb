@@ -12,6 +12,8 @@ module Signatures
 
       def call(to_sign, secret:, **options)
         text_to_sign = Array(to_sign).map(&:to_s).join
+        secret = secret || ''
+
         hmac.hexdigest sha, secret, text_to_sign
       end
 

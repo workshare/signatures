@@ -3,7 +3,7 @@ module Signatures
     class Basic
       attr_accessor :keystore, :signer
 
-      def initialize(signer: Signers::Keystore.new(keystore))
+      def initialize(keystore: {}, signer: Signers::Keystore.new(keystore: keystore))
         self.signer = signer
       end
 
