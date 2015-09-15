@@ -1,7 +1,10 @@
+require 'rack'
+require 'signatures/signers/basic'
+
 module Signatures
   module SpecHelper
     def signer
-      Signatrues::Basic
+      Signatures::Signers::Basic.new
     end
 
     def secret
@@ -18,15 +21,15 @@ module Signatures
 
     def signed_request!(method = :get, uri = '', params = {}, env = {}, &block)
       to_sign = if method == :get
-        params.to_param
+        Rack::Utils.build_query(params)
       else
-        params.to_json
+        params.is_a?(Hash) ? params.to_json : params
       end
 
-      signature = signer.call to_sign, timestamp, secret: secret
-      header 'HTTP_SIGNATURE', signature
-      header 'HTTP_TIMESTAMP', timestamp
-      header 'HTTP_SIGNATURE_KEY', signature_key
+      signature = signer.call to_sign + timestamp.to_s, secret: secret
+      header 'SIGNATURE', signature
+      header 'TIMESTAMP', timestamp
+      header 'SIGNATURE_KEY', signature_key
       send method, uri, params, env, &block
     end
   end
