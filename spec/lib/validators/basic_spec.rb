@@ -12,17 +12,21 @@ describe Signatures::Validators::Basic do
   describe '#call' do
     before do
       allow(signer).to receive(:call)
-        .with(to_validate, key: :key).and_return(signed)
+        .with(to_validate, key: :key, timestamp: timestamp).and_return(signed)
+    end
+
+    def do_call
+      subject.call(to_validate: to_validate, signature: :signature, key: :key, timestamp: timestamp)
     end
 
     context 'when there is no timestamp in the signature' do
-      let(:to_validate) { { to_validate: :to_validate } }
+      let(:to_validate) { :to_validate }
 
       context 'when the signature for the given text is the same as the signature received' do
         let(:signed) { :signature }
 
         it 'returns true' do
-          expect(subject.call(to_validate: to_validate, signature: :signature, key: :key)).to be true
+          expect(do_call).to be true
         end
       end
 
@@ -30,13 +34,13 @@ describe Signatures::Validators::Basic do
         let(:signed) { :something }
 
         it 'returns false' do
-          expect(subject.call(to_validate: to_validate, signature: :signature, key: :key)).to be false
+          expect(do_call).to be false
         end
       end
     end
 
     context 'when there is timestamp in the signature' do
-      let(:to_validate) { { to_validate: :to_validate, timestamp: timestamp } }
+      let(:to_validate) { :to_validate }
       let(:time_now_from_timestamp) { 5 }
       let(:signed) { :signature }
 
@@ -44,7 +48,7 @@ describe Signatures::Validators::Basic do
         let(:expiration_time) { 2 }
 
         it 'returns false' do
-          expect(subject.call(to_validate: to_validate, signature: :signature, key: :key)).to be false
+          expect(do_call).to be false
         end
       end
 
@@ -52,7 +56,7 @@ describe Signatures::Validators::Basic do
         let(:expiration_time) { 10 }
 
         it 'returns true' do
-          expect(subject.call(to_validate: to_validate, signature: :signature, key: :key)).to be true
+          expect(do_call).to be true
         end
       end
     end

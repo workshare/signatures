@@ -9,16 +9,15 @@ module Signatures
         self.clock = clock
       end
 
-      def call(to_validate:, signature:, **args)
-        !expired_signature?(to_validate) &&
-        signer.call(to_validate, args) == signature
+      def call(to_validate:, signature:, key:, timestamp: nil)
+        !expired_signature?(timestamp) &&
+        signer.call(to_validate, key: key, timestamp: timestamp) == signature
       end
 
       private
 
-      def expired_signature?(signature_params)
-        signature_params[:timestamp] &&
-        (clock.now.to_i - signature_params[:timestamp]) > expiration_time
+      def expired_signature?(timestamp)
+        timestamp && (clock.now.to_i - timestamp) > expiration_time
       end
 
       attr_writer :keystore, :signer, :expiration_time, :clock

@@ -16,7 +16,7 @@ module Signatures
     end
 
     def timestamp
-      1
+      9999999999999999999
     end
 
     def signed_request!(method = :get, uri = '', params = {}, env = {}, &block)
