@@ -26,7 +26,9 @@ module Signatures
         params.is_a?(Hash) ? params.to_json : params
       end
 
-      signature = signer.call to_sign + timestamp.to_s, secret: secret
+      uri = "/#{uri}" if uri[0] != "/"
+
+      signature = signer.call to_sign + uri + timestamp.to_s, secret: secret
       header 'SIGNATURE', signature
       header 'TIMESTAMP', timestamp
       header 'SIGNATURE_KEY', signature_key
