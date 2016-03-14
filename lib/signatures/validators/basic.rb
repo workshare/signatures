@@ -17,7 +17,7 @@ module Signatures
       private
 
       def expired_signature?(timestamp)
-        timestamp && (clock.now.to_i - timestamp) > expiration_time
+        timestamp && !timestamp.empty? && (clock.now.to_i - timestamp.to_i) > expiration_time
       end
 
       attr_writer :keystore, :signer, :expiration_time, :clock
