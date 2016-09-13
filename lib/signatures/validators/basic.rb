@@ -14,8 +14,6 @@ module Signatures
         signer.call(to_validate, key: key, timestamp: timestamp) == signature
       end
 
-      private
-
       def expired_signature?(timestamp)
         timestamp && timestamp.to_i != 0 && (clock.now.to_i - timestamp.to_i) > expiration_time
       end
